@@ -45,7 +45,7 @@ def append_new_data(new_data, existing_data):
     for key in sorted(new_data.keys()):
         item = new_data[key]
         
-        if key not in existing_data:
+        if key not in existing_data and item is not None:
             print(f"New activity: id={key}")
             item['api_call_ts'] = time.strftime(configs.strfrmt)
             existing_data[key] = item
