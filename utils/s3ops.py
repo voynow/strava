@@ -31,11 +31,11 @@ def validate_data(data):
 def put_object(data, bucket, filename):
     """ Write json table to s3
     """
-    if validate_data(data):
-        s3_obj = s3.Object(bucket, filename)
-        resp = s3_obj.put(Body=json.dumps(data))
-    else:
-        raise ValueError(f"{filename} data validation failure (IDs not ordered)")
+    ids = sorted(list(data.keys()))
+    put_data = {i: data[i] for i in ids}
+
+    s3_obj = s3.Object(bucket, filename)
+    resp = s3_obj.put(Body=json.dumps(put_data))
     return resp
 
 

@@ -13,8 +13,8 @@ password = secrets['password']
 activities_base_url = 'activities/'
 streams_endpoint_keys = "time,distance,latlng,altitude,velocity_smooth,heartrate,cadence,watts,temp,moving,grade_smooth"
 activities_endpoints = {
-        "zones": '/zones',
-        "laps": '/laps',
+        # "zones": '/zones',
+        # "laps": '/laps',
         "streams": f'/streams?keys={streams_endpoint_keys}&key_by_type=true'
 }
 rate_exceeded_message = 'Rate Limit Exceeded'
