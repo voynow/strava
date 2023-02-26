@@ -1,0 +1,5 @@
+numpy
+matplotlib
+boto3
+requests
+selenium
