@@ -1,6 +1,5 @@
 
 def get_code(encoded):
-    print("html.get_code")
     return f"""
     <!DOCTYPE html>
     <html>
@@ -27,11 +26,7 @@ def get_code(encoded):
                 <p style="font-size: 16px; color: #434343; font-weight: bold; text-align: center;">Don't know what strava is? <a href="https://www.strava.com/athletes/98390356">Check out my profile</a></p>
                 <img src='data:image/png;base64,{encoded}' alt="matplotlib fig derived from strava data" style="margin: 20px auto; width: 100%; border-radius: 10px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 10px 20px rgba(0, 0, 0, 0.23);">
                 <div style="width: 75%; margin: 0 auto; font-size: 20px; color: #434343;">
-                    <p style="font-size: 22px; font-weight: bold; margin-bottom: 0;">This dashboard is updated daily at 11:30pm EST</p>
-                    <ul style="margin: 0; padding-top: 5px;">
-                        <li>The <a href="https://github.com/voynow/strava-ingestion-lambda">ingestion lambda</a> is responsible for querying the strava API and storing the data in S3</li>
-                        <li>The <a href="https://github.com/voynow/strava-dashboard-lambda">dashboard lambda</a> queries the S3 data and updates the dashboard accordingly</li>
-                    </ul>
+                    <p style="font-size: 18px; margin-bottom: 0; text-align: center;">Updated daily at 11:30pm EST (Code: <a href="https://github.com/voynow/strava">github</a>)</p>
                 </div>
             </div>
         </body>

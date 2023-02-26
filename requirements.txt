@@ -3,3 +3,4 @@ matplotlib
 boto3
 requests
 selenium
+pandas

@@ -16,7 +16,6 @@ figsize = (14, 6)
 def create_fig(df, heatmap):
     """ matplotlib subplot for dashboard visualizations
     """
-    print("dashboard.create_fig")
     # figure setup
     fig = plt.figure(constrained_layout=True, figsize=figsize)
     axs = fig.subplot_mosaic(
@@ -57,7 +56,6 @@ def update_dashboard(df, heatmap):
     """
     Generate html from matplotlib plot
     """
-    print("dashboard.update_dashboard")
     tmpfile = BytesIO()
     fig = create_fig(df, heatmap)
 
