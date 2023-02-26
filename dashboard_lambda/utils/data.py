@@ -3,18 +3,17 @@ import datetime
 import json
 import numpy as np
 import pandas as pd
+pd.options.mode.chained_assignment = None
 
 raw_bucket = "strava-raw"
 s3 = boto3.resource('s3')
 
 
-def get_activities(bucket, table):
-    """
-    Get activities JSON from raw bucket
+def load_table(bucket, table):
+    """ Get json table from s3
     """
     obj = s3.Object(bucket, table)
-    table = json.loads(obj.get()['Body'].read())
-    return [data for _, data in table.items()]
+    return json.loads(obj.get()['Body'].read())
 
 
 def clean(df):
@@ -26,14 +25,19 @@ def clean(df):
     
     # meters -> miles
     df['distance'] *= 0.000621371
+
+    # seconds -> minutes
+    df['moving_time'] /= 60
     
     return df
     
 
-def activities_to_df(activities):
+def activities_to_df(table):
     """
     Create pandas dataframe from list of activities
     """
+    activities = [activity for _, activity in table.items()]
+
     keys = []
     [[keys.append(item) for item in activity] for activity in activities]
     unique_keys = set(keys)
@@ -64,13 +68,14 @@ def fill_missing_dates(df):
     return joined_df
 
 
-def get_data():
+def get_running_df():
     """ Prepare data for analytics
     """
-    activities = get_activities(raw_bucket, "activities.json")
-    df = activities_to_df(activities)
+    table = load_table(raw_bucket, "activities.json")
+    df = activities_to_df(table)
 
     run_df = df[df['type'] == 'Run']
+    run_df['pace'] = run_df.moving_time / run_df.distance
 
     return run_df
 
@@ -78,21 +83,23 @@ def get_data():
 def calc_moving_average():
     """ Apply transformation according to date, calculate moving averages
     """    
-    df = fill_missing_dates(get_data())
-    df = df.groupby('date')[['total_elevation_gain', 'distance']].sum()
+    df = fill_missing_dates(get_running_df())
+    grouped = df.groupby('date')[['total_elevation_gain', 'distance', 'pace']]
+
+    grouped_cols = [
+        grouped.sum()['distance'], 
+        grouped.mean()['pace']
+    ]
+    df = pd.concat(grouped_cols, axis=1)
 
     df['distance'] = df['distance'].apply(lambda x: 0 if np.isnan(x) else x)
     df['distance_monthly_ma'] = df['distance'].rolling(30).sum().rolling(2).mean()
     df['distance_week_ma'] = df['distance'].rolling(7).sum().rolling(2).mean()
+    
+    df = df.dropna()
+    df['weekly_pace_ma'] = df['pace'].rolling(7).mean()
 
     return df
-
-
-def load_table(bucket, table):
-    """ Get json table from s3
-    """
-    obj = s3.Object(bucket, table)
-    return json.loads(obj.get()['Body'].read())
 
     
 def get_philly_heatmap():
