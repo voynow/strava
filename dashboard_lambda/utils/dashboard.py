@@ -39,12 +39,12 @@ def create_fig(df, heatmap):
         linewidth=3
     )
 
-    # Weekly mileage configuration
-    axs['BottomRight'].set_title('Weekly Mileage')
-    axs['BottomRight'].set_ylabel('Mileage')
+    # Weekly pace configuration
+    axs['BottomRight'].set_title('Weekly Average Pace')
+    axs['BottomRight'].set_ylabel('min/mile')
     axs['BottomRight'].plot(
         df.index, 
-        df['distance_week_ma'], 
+        df['weekly_pace_ma'], 
         c='#348ABD', 
         linewidth=3
     )
